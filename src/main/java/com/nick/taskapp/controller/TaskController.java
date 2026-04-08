@@ -37,6 +37,12 @@ public class TaskController {
     public void deleteTaskById(@PathVariable Long id){
         taskService.deleteTaskById(id);
     }
+    //PathVariable: get data from the URL path; RequestBody: get data from the request body
+    @PutMapping("/{id}")
+    public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask){
+        return taskService.updateTask(id, updatedTask);
+    }
+
 }
 
 

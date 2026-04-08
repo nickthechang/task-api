@@ -2,6 +2,7 @@ package com.nick.taskapp.service;
 
 import com.nick.taskapp.model.Task;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,16 @@ public class TaskService {
         tasks.removeIf(task->task.getId().equals(id));
     }
 
+    public Task updateTask(Long id, Task updatedTask){
+        for(Task task:tasks){
+            if(task.getId().equals(id)){
+                task.setTitle(updatedTask.getTitle());
+                task.setCompleted(updatedTask.isCompleted());
+                return task;
+            }
+        }
+        return null;
+    }
 
 }
 
