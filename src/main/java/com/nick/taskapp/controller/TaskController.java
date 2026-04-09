@@ -2,6 +2,9 @@ package com.nick.taskapp.controller;
 
 import com.nick.taskapp.model.Task;
 import com.nick.taskapp.service.TaskService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -26,7 +29,8 @@ public class TaskController {
     }
     //someone selds POST /tasks converts into Task object method runs calls service returns created task spring->json response
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
+    //@valid since request body is required
+    public Task createTask(@Valid @RequestBody Task task) {
         return taskService.createTask(task);
     }
 
@@ -51,7 +55,7 @@ public class TaskController {
 
     //PathVariable: get data from the URL path; RequestBody: get data from the request body
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask){
+    public Task updateTask(@PathVariable Long id, @Valid @RequestBody Task updatedTask){
         // try{
         //     return taskService.updateTask(id, updatedTask);
         // } catch (RuntimeException e){
