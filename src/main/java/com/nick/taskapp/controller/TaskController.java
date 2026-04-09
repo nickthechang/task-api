@@ -3,6 +3,8 @@ package com.nick.taskapp.controller;
 import com.nick.taskapp.model.Task;
 import com.nick.taskapp.service.TaskService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -29,7 +31,15 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public Task getTaskID(@PathVariable Long id){
+    public Task getTaskById(@PathVariable Long id){
+        //global handler instead of this
+        // try{
+        //     return taskService.getTaskById(id);
+        // } catch (RuntimeException e){
+        //     throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        // }
+
+        //global handler catches it automatically
         return taskService.getTaskById(id);
     }
 
@@ -37,10 +47,22 @@ public class TaskController {
     public void deleteTaskById(@PathVariable Long id){
         taskService.deleteTaskById(id);
     }
+
+
     //PathVariable: get data from the URL path; RequestBody: get data from the request body
     @PutMapping("/{id}")
     public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask){
+        // try{
+        //     return taskService.updateTask(id, updatedTask);
+        // } catch (RuntimeException e){
+        //     throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        // }
         return taskService.updateTask(id, updatedTask);
+    }
+
+    @GetMapping("/completed")
+    public List<Task> getCompletedTasks() {
+        return taskService.getCompletedTasks();
     }
 
 }

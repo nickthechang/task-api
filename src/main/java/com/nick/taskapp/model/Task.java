@@ -1,8 +1,21 @@
 package com.nick.taskapp.model;
 
-public class Task {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
+@Entity
+public class Task {
+    //old
+    // private Long id;
+    // private String title;
+    // private boolean completed;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private boolean completed;
 
