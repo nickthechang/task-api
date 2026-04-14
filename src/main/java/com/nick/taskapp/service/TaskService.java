@@ -76,11 +76,16 @@ public class TaskService {
         Task existingTask = getTaskById(id);
         existingTask.setTitle(updatedTask.getTitle());
         existingTask.setCompleted(updatedTask.isCompleted());
+        existingTask.setPriority(updatedTask.getPriority());
         return taskRepository.save(existingTask);
     }
         
     public List<Task> getCompletedTasks() {
         return taskRepository.findByCompleted(true);
+    }
+
+    public List<Task> searchTasksByTitle(String title) {
+        return taskRepository.findByTitleContainingIgnoreCase(title);
     }
 
 }

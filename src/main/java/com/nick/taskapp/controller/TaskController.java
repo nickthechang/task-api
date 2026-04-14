@@ -69,6 +69,11 @@ public class TaskController {
         return taskService.getCompletedTasks();
     }
 
+    @GetMapping("/search")
+    public List<Task> searchTasksByTitle(@RequestParam String title) {
+        return taskService.searchTasksByTitle(title);
+    }
+
 }
 
 
