@@ -7,6 +7,7 @@ import com.nick.taskapp.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +78,7 @@ public class TaskService {
         existingTask.setTitle(updatedTask.getTitle());
         existingTask.setCompleted(updatedTask.isCompleted());
         existingTask.setPriority(updatedTask.getPriority());
+        existingTask.setDueDate(updatedTask.getDueDate());
         return taskRepository.save(existingTask);
     }
         
@@ -86,6 +88,10 @@ public class TaskService {
 
     public List<Task> searchTasksByTitle(String title) {
         return taskRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<Task> getOverdueTasks() {
+        return taskRepository.findByDueDateBeforeAndCompletedFalse(LocalDate.now());
     }
 
 }

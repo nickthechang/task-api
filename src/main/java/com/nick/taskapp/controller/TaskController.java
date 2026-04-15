@@ -74,6 +74,11 @@ public class TaskController {
         return taskService.searchTasksByTitle(title);
     }
 
+    @GetMapping("/overdue")
+    public List<Task> getOverdueTasks() {
+        return taskService.getOverdueTasks();
+    }
+
 }
 
 

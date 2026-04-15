@@ -11,6 +11,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +37,7 @@ class TaskControllerTest {
 
     @Test
     void shouldReturnAllTasks() throws Exception {
-        Task task = new Task(1L, "Test Task", false, "HIGH");
+        Task task = new Task(1L, "Test Task", false, "HIGH", LocalDate.of(2026, 4, 20));
         when(taskService.getAllTasks()).thenReturn(List.of(task));
 
         mockMvc.perform(get("/tasks"))
@@ -46,7 +47,7 @@ class TaskControllerTest {
 
     @Test
     void shouldReturnTaskById() throws Exception {
-        Task task = new Task(1L, "Test Task", false, "LOW");
+        Task task = new Task(1L, "Test Task", false, "LOW", LocalDate.of(2026, 4, 20));
         when(taskService.getTaskById(1L)).thenReturn(task);
 
         mockMvc.perform(get("/tasks/1"))
@@ -57,7 +58,7 @@ class TaskControllerTest {
 
     @Test
     void shouldCreateTask() throws Exception {
-        Task task = new Task(1L, "New Task", false, "LOW");
+        Task task = new Task(1L, "New Task", false, "LOW", LocalDate.of(2026, 4, 20));
         when(taskService.createTask(any(Task.class))).thenReturn(task);
 
         mockMvc.perform(post("/tasks")
@@ -69,7 +70,7 @@ class TaskControllerTest {
 
     @Test
     void shouldUpdateTask() throws Exception {
-        Task updatedTask = new Task(1L, "Updated Task", true, "HIGH");
+        Task updatedTask = new Task(1L, "Updated Task", true, "HIGH", LocalDate.of(2026, 4, 20));
         when(taskService.updateTask(any(Long.class), any(Task.class))).thenReturn(updatedTask);
 
         mockMvc.perform(put("/tasks/1")
@@ -91,8 +92,8 @@ class TaskControllerTest {
 
     @Test
     void shouldSearchTasksByTitle() throws Exception {
-        Task task1 = new Task(1L, "Learn Spring Boot", false, "HIGH");
-        Task task2 = new Task(2L, "Spring project", true, "LOW");
+        Task task1 = new Task(1L, "Learn Spring Boot", false, "HIGH", LocalDate.of(2026, 4, 20));
+        Task task2 = new Task(2L, "Spring project", true, "LOW", LocalDate.of(2026, 4, 20));
 
         when(taskService.searchTasksByTitle("spring")).thenReturn(List.of(task1, task2));
 
@@ -100,5 +101,17 @@ class TaskControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value("Learn Spring Boot"))
                 .andExpect(jsonPath("$[1].title").value("Spring project"));
+    }
+
+    @Test
+    void shouldReturnOverdueTasks() throws Exception {
+        Task overdueTask = new Task(1L, "Late task", false, "HIGH", LocalDate.of(2026, 4, 1));
+
+        when(taskService.getOverdueTasks()).thenReturn(List.of(overdueTask));
+
+        mockMvc.perform(get("/tasks/overdue"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Late task"))
+                .andExpect(jsonPath("$[0].completed").value(false));
     }
 }

@@ -20,6 +20,8 @@ public class Task {
     private Long id;
 
     private String priority;
+
+    private LocalDate dueDate;
     
     @NotBlank(message = "Title is required")
     private String title;
@@ -29,11 +31,12 @@ public class Task {
     public Task() {
     }
 
-    public Task(Long id, String title, boolean completed, String priority) {
+    public Task(Long id, String title, boolean completed, String priority, LocalDate dueDate) {
         this.id = id;
         this.title = title;
         this.completed = completed;
         this.priority = priority;
+        this.dueDate = dueDate;
     }
 
     public Long getId() {
@@ -63,6 +66,14 @@ public class Task {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 }
 
