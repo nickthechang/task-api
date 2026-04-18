@@ -13,12 +13,27 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     //handle validation errors globally
+    // @ExceptionHandler(MethodArgumentNotValidException.class)
+    // public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
+    //     Map<String, String> errors = new HashMap<>();
+    //     ex.getBindingResult().getFieldErrors()
+    //             .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+
+    //     return ResponseEntity.badRequest().body(errors);
+    // }
+
+    //improved global error format
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
+        Map<String, Object> response = new HashMap<>();
         Map<String, String> errors = new HashMap<>();
+
         ex.getBindingResult().getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
-        return ResponseEntity.badRequest().body(errors);
+        response.put("message", "Validation failed");
+        response.put("errors", errors);
+
+        return ResponseEntity.badRequest().body(response);
     }
 }

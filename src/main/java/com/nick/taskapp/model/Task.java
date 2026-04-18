@@ -23,11 +23,14 @@ public class Task {
     private Long id;
 
     private String priority;
-
-    private LocalDate dueDate;
-    
+    //for clearner validation + error response
     @NotBlank(message = "Title is required")
     private String title;
+
+    //for clearner validation + error response
+    @NotNull(message = "Due date is required")
+    private LocalDate dueDate;
+    
     private boolean completed;
 
     // Required for JSON deserialization
