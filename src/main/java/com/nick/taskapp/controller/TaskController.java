@@ -8,9 +8,12 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+//for frontend
+@CrossOrigin(origins = "http://localhost:4200")
 //API layer
 @RestController
 //All endpoints start with /tasks
@@ -23,10 +26,23 @@ public class TaskController {
         this.taskService = taskService;
     }
     //request hits controller this method runs calls service returns list and spring converts to json
+    // @GetMapping
+    // public List<Task> getAllTasks() {
+    //     return taskService.getAllTasks();
+    // }
+
+    //paganation - return data in chunks instead of everything at once
+    //for performance, scalability, frontendux
     @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    public Page<Task> getAllTasks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return taskService.getTasksPaginated(page, size);
     }
+
+
+
+
     //someone selds POST /tasks converts into Task object method runs calls service returns created task spring->json response
     @PostMapping
     //@valid since request body is required
@@ -78,6 +94,18 @@ public class TaskController {
     public List<Task> getOverdueTasks() {
         return taskService.getOverdueTasks();
     }
+
+    @GetMapping("/sorted-by-due-date")
+    public List<Task> getTasksSortedByDueDate() {
+        return taskService.getTasksSortedByDueDate();
+    }
+
+    @GetMapping("/priority")
+    public List<Task> getTasksByPriority(@RequestParam String level) {
+        return taskService.getTasksByPriority(level);
+    }
+
+    
 
 }
 

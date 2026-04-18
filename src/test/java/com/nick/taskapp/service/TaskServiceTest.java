@@ -177,4 +177,32 @@ class TaskServiceTest {
         assertFalse(result.get(0).isCompleted());
         verify(taskRepository, times(1)).findByDueDateBeforeAndCompletedFalse(any(LocalDate.class));
     }
+
+    @Test
+    void shouldGetTasksSortedByDueDate() {
+        Task task1 = new Task(1L, "Second task", false, "MEDIUM", LocalDate.of(2026, 4, 30));
+        Task task2 = new Task(2L, "First task", false, "HIGH", LocalDate.of(2026, 4, 20));
+
+        when(taskRepository.findAllByOrderByDueDateAsc()).thenReturn(List.of(task2, task1));
+
+        List<Task> result = taskService.getTasksSortedByDueDate();
+
+        assertEquals(2, result.size());
+        assertEquals("First task", result.get(0).getTitle());
+        assertEquals(LocalDate.of(2026, 4, 20), result.get(0).getDueDate());
+        verify(taskRepository, times(1)).findAllByOrderByDueDateAsc();
+    }
+
+    @Test
+    void shouldGetTasksByPriority() {
+        Task task = new Task(1L, "Important task", false, "HIGH", LocalDate.of(2026, 4, 20));
+
+        when(taskRepository.findByPriorityIgnoreCase("HIGH")).thenReturn(List.of(task));
+
+        List<Task> result = taskService.getTasksByPriority("HIGH");
+
+        assertEquals(1, result.size());
+        assertEquals("HIGH", result.get(0).getPriority());
+        verify(taskRepository, times(1)).findByPriorityIgnoreCase("HIGH");
+    }
 }

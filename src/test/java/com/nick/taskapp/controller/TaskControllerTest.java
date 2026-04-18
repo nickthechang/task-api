@@ -114,4 +114,28 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$[0].title").value("Late task"))
                 .andExpect(jsonPath("$[0].completed").value(false));
     }
+
+    @Test
+    void shouldReturnTasksSortedByDueDate() throws Exception {
+        Task task1 = new Task(2L, "First task", false, "HIGH", LocalDate.of(2026, 4, 20));
+        Task task2 = new Task(1L, "Second task", false, "MEDIUM", LocalDate.of(2026, 4, 30));
+
+        when(taskService.getTasksSortedByDueDate()).thenReturn(List.of(task1, task2));
+
+        mockMvc.perform(get("/tasks/sorted-by-due-date"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("First task"))
+                .andExpect(jsonPath("$[1].title").value("Second task"));
+    }
+
+    @Test
+    void shouldReturnTasksByPriority() throws Exception {
+        Task task = new Task(1L, "Important task", false, "HIGH", LocalDate.of(2026, 4, 20));
+
+        when(taskService.getTasksByPriority("HIGH")).thenReturn(List.of(task));
+
+        mockMvc.perform(get("/tasks/priority").param("level", "HIGH"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].priority").value("HIGH"));
+    }
 }

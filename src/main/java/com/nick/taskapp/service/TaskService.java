@@ -4,6 +4,9 @@ import com.nick.taskapp.exception.TaskNotFoundException;
 import com.nick.taskapp.model.Task;
 import com.nick.taskapp.repository.TaskRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -92,6 +95,19 @@ public class TaskService {
 
     public List<Task> getOverdueTasks() {
         return taskRepository.findByDueDateBeforeAndCompletedFalse(LocalDate.now());
+    }
+
+    public List<Task> getTasksSortedByDueDate() {
+        return taskRepository.findAllByOrderByDueDateAsc();
+    }
+
+    public List<Task> getTasksByPriority(String priority) {
+        return taskRepository.findByPriorityIgnoreCase(priority);
+    }    
+
+    public Page<Task> getTasksPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return taskRepository.findAll(pageable);
     }
 
 }
