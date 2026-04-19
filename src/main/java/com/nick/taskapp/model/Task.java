@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import com.nick.taskapp.model.Priority;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +23,8 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String priority;
+    //from priority model
+    private Priority priority;
     //for clearner validation + error response
     @NotBlank(message = "Title is required")
     private String title;
@@ -37,7 +39,7 @@ public class Task {
     public Task() {
     }
 
-    public Task(Long id, String title, boolean completed, String priority, LocalDate dueDate) {
+    public Task(Long id, String title, boolean completed, Priority priority, LocalDate dueDate) {
         this.id = id;
         this.title = title;
         this.completed = completed;
@@ -66,11 +68,11 @@ public class Task {
         this.completed = completed;
     }
 
-    public String getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Priority priority) {
         this.priority = priority;
     }
 

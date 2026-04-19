@@ -3,6 +3,7 @@ package com.nick.taskapp.controller;
 // import com.nick.taskapp.model.Task;
 import com.nick.taskapp.service.TaskService;
 import com.nick.taskapp.dto.*;
+import com.nick.taskapp.model.Priority;
 
 import jakarta.validation.Valid;
 
@@ -13,7 +14,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-//for frontend
+//for frontend but dont need anymore because of webconfig
 @CrossOrigin(origins = "http://localhost:4200")
 //API layer
 @RestController
@@ -43,11 +44,12 @@ public class TaskController {
     // }
     
     //clean pagination response more frontend friendly
+    //wrap responses ->standard API response wrapper
     @GetMapping
-    public PaginatedResponseDto<TaskResponseDto> getAllTasks(
+    public ApiResponse<PaginatedResponseDto<TaskResponseDto>> getAllTasks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return taskService.getTasksPaginated(page, size);
+        return ApiResponse.success(taskService.getTasksPaginated(page, size));
     }
 
 
@@ -55,13 +57,12 @@ public class TaskController {
 
     //someone selds POST /tasks converts into Task object method runs calls service returns created task spring->json response
     @PostMapping
-    //@valid since request body is required
-    public TaskResponseDto createTask(@Valid @RequestBody TaskRequestDto task) {
-        return taskService.createTask(task);
+    public ApiResponse<TaskResponseDto> createTask(@Valid @RequestBody TaskRequestDto task) {
+        return ApiResponse.success("Task created", taskService.createTask(task));
     }
 
     @GetMapping("/{id}")
-    public TaskResponseDto getTaskById(@PathVariable Long id){
+    public ApiResponse<TaskResponseDto> getTaskById(@PathVariable Long id){
         //global handler instead of this
         // try{
         //     return taskService.getTaskById(id);
@@ -70,29 +71,30 @@ public class TaskController {
         // }
 
         //global handler catches it automatically
-        return taskService.getTaskById(id);
+        return ApiResponse.success(taskService.getTaskById(id));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTaskById(@PathVariable Long id){
+    public ApiResponse<Void> deleteTaskById(@PathVariable Long id){
         taskService.deleteTaskById(id);
+        return ApiResponse.success("Task deleted", null);
     }
 
 
     //PathVariable: get data from the URL path; RequestBody: get data from the request body
     @PutMapping("/{id}")
-    public TaskResponseDto updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequestDto updatedTask){
+    public ApiResponse<TaskResponseDto> updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequestDto updatedTask){
         // try{
         //     return taskService.updateTask(id, updatedTask);
         // } catch (RuntimeException e){
         //     throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         // }
-        return taskService.updateTask(id, updatedTask);
+        return ApiResponse.success(taskService.updateTask(id, updatedTask));
     }
 
     @GetMapping("/completed")
-    public List<TaskResponseDto> getCompletedTasks() {
-        return taskService.getCompletedTasks();
+    public ApiResponse<List<TaskResponseDto>> getCompletedTasks() {
+        return ApiResponse.success(taskService.getCompletedTasks());
     }
 
     @GetMapping("/search")
@@ -111,7 +113,7 @@ public class TaskController {
     }
 
     @GetMapping("/priority")
-    public List<TaskResponseDto> getTasksByPriority(@RequestParam String level) {
+    public List<TaskResponseDto> getTasksByPriority(@RequestParam Priority level) {
         return taskService.getTasksByPriority(level);
     }
 

@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.nick.taskapp.dto.ApiResponse;
+
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.HashMap;
@@ -23,16 +25,36 @@ public class GlobalExceptionHandler {
     // }
 
     //improved global error format
+    // @ExceptionHandler(MethodArgumentNotValidException.class)
+    // public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
+    //     Map<String, Object> response = new HashMap<>();
+    //     Map<String, String> errors = new HashMap<>();
+
+    //     ex.getBindingResult().getFieldErrors()
+    //             .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+
+    //     response.put("message", "Validation failed");
+    //     response.put("errors", errors);
+
+    //     return ResponseEntity.badRequest().body(response);
+    // }
+
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNotFound(TaskNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error(ex.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
 
         ex.getBindingResult().getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
-        response.put("message", "Validation failed");
-        response.put("errors", errors);
+        ApiResponse<Map<String, String>> response =
+                new ApiResponse<>(false, errors, "Validation failed");
 
         return ResponseEntity.badRequest().body(response);
     }

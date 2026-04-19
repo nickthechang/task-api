@@ -1,19 +1,20 @@
 package com.nick.taskapp.dto;
 
 import java.time.LocalDate;
+import com.nick.taskapp.model.Priority;
 
 public class TaskResponseDto {
 
     private Long id;
     private String title;
     private boolean completed;
-    private String priority;
+    private Priority priority;
     private LocalDate dueDate;
 
     public TaskResponseDto() {
     }
 
-    public TaskResponseDto(Long id, String title, boolean completed, String priority, LocalDate dueDate) {
+    public TaskResponseDto(Long id, String title, boolean completed, Priority priority, LocalDate dueDate) {
         this.id = id;
         this.title = title;
         this.completed = completed;
@@ -45,11 +46,11 @@ public class TaskResponseDto {
         this.completed = completed;
     }
 
-    public String getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Priority priority) {
         this.priority = priority;
     }
 

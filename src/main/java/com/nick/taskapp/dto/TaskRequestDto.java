@@ -1,4 +1,5 @@
 package com.nick.taskapp.dto;
+import com.nick.taskapp.model.Priority;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +17,7 @@ public class TaskRequestDto {
 
     private boolean completed;
 
-    private String priority;
+    private Priority priority;
 
     @NotNull(message = "Due date is required")
     private LocalDate dueDate;
@@ -24,7 +25,7 @@ public class TaskRequestDto {
     public TaskRequestDto() {
     }
 
-    public TaskRequestDto(String title, boolean completed, String priority, LocalDate dueDate) {
+    public TaskRequestDto(String title, boolean completed, Priority priority, LocalDate dueDate) {
         this.title = title;
         this.completed = completed;
         this.priority = priority;
@@ -47,11 +48,11 @@ public class TaskRequestDto {
         this.completed = completed;
     }
 
-    public String getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Priority priority) {
         this.priority = priority;
     }
 
