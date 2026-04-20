@@ -117,6 +117,22 @@ public class TaskController {
         return taskService.getTasksByPriority(level);
     }
 
+
+    @GetMapping("/advanced")
+    public ApiResponse<PaginatedResponseDto<TaskResponseDto>> getTasksAdvanced(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Priority priority,
+            @RequestParam(required = false) Boolean completed,
+            @RequestParam(defaultValue = "dueDate") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        return ApiResponse.success(
+                taskService.getTasksAdvanced(page, size, title, priority, completed, sortBy, direction)
+        );
+    }
+
     
 
 }

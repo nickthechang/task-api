@@ -7,8 +7,6 @@ import java.util.List;
 //for logging to see what broke
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +17,18 @@ import com.nick.taskapp.dto.PaginatedResponseDto;
 import com.nick.taskapp.dto.TaskRequestDto;
 import com.nick.taskapp.dto.TaskResponseDto;
 import com.nick.taskapp.exception.TaskNotFoundException;
+import com.nick.taskapp.model.Priority;
 import com.nick.taskapp.model.Task;
 import com.nick.taskapp.repository.TaskRepository;
+
+
 import com.nick.taskapp.model.Priority;
+import com.nick.taskapp.specification.TaskSpecification;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+
+
+
 @Service
 public class TaskService {
 
@@ -239,7 +246,9 @@ public class TaskService {
                 task.getTitle(),
                 task.isCompleted(),
                 task.getPriority(),
-                task.getDueDate()
+                task.getDueDate(),
+                task.getCreatedAt(),
+                task.getUpdatedAt()
         );
     }
 
@@ -250,6 +259,43 @@ public class TaskService {
         task.setPriority(dto.getPriority());
         task.setDueDate(dto.getDueDate());
         return task;
+    }
+
+
+    public PaginatedResponseDto<TaskResponseDto> getTasksAdvanced(
+            int page,
+            int size,
+            String title,
+            Priority priority,
+            Boolean completed,
+            String sortBy,
+            String direction
+    ) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Specification<Task> spec = Specification
+                .where(TaskSpecification.hasTitle(title))
+                .and(TaskSpecification.hasPriority(priority))
+                .and(TaskSpecification.isCompleted(completed));
+
+        Page<Task> taskPage = taskRepository.findAll(spec, pageable);
+
+        List<TaskResponseDto> data = taskPage.getContent()
+                .stream()
+                .map(this::mapToResponseDto)
+                .toList();
+
+        return new PaginatedResponseDto<>(
+                data,
+                taskPage.getNumber(),
+                taskPage.getSize(),
+                taskPage.getTotalElements(),
+                taskPage.getTotalPages()
+        );
     }
 
 }
