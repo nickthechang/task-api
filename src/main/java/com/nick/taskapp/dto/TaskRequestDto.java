@@ -4,6 +4,7 @@ import com.nick.taskapp.model.Priority;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+
 import java.time.LocalDate;
 
 
@@ -16,7 +17,8 @@ public class TaskRequestDto {
     private String title;
 
     private boolean completed;
-
+    
+    @NotNull(message = "Priority is required")
     private Priority priority;
 
     @NotNull(message = "Due date is required")
