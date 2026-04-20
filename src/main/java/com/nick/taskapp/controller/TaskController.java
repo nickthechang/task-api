@@ -133,6 +133,14 @@ public class TaskController {
         );
     }
 
+
+    @PatchMapping("/{id}")
+    public ApiResponse<TaskResponseDto> patchTask(
+            @PathVariable Long id,
+            @RequestBody TaskPatchDto patchDto) {
+        return ApiResponse.success("Task patched", taskService.patchTask(id, patchDto));
+    }
+
     
 
 }

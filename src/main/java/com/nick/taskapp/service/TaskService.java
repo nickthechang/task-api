@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 // import org.springframework.web.bind.annotation.PathVariable;
 
 import com.nick.taskapp.dto.PaginatedResponseDto;
+import com.nick.taskapp.dto.TaskPatchDto;
 import com.nick.taskapp.dto.TaskRequestDto;
 import com.nick.taskapp.dto.TaskResponseDto;
 import com.nick.taskapp.exception.TaskNotFoundException;
@@ -296,6 +297,31 @@ public class TaskService {
                 taskPage.getTotalElements(),
                 taskPage.getTotalPages()
         );
+    }
+
+
+    public TaskResponseDto patchTask(Long id, TaskPatchDto patchDto) {
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+
+        if (patchDto.getTitle() != null) {
+            existingTask.setTitle(patchDto.getTitle());
+        }
+
+        if (patchDto.getCompleted() != null) {
+            existingTask.setCompleted(patchDto.getCompleted());
+        }
+
+        if (patchDto.getPriority() != null) {
+            existingTask.setPriority(patchDto.getPriority());
+        }
+
+        if (patchDto.getDueDate() != null) {
+            existingTask.setDueDate(patchDto.getDueDate());
+        }
+
+        Task savedTask = taskRepository.save(existingTask);
+        return mapToResponseDto(savedTask);
     }
 
 }
