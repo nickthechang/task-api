@@ -1,0 +1,69 @@
+Hibernate is:
+a dependency in your project (inside Spring Boot)
+running behind the scenes when your app starts
+
+You probably have this in your pom.xml:
+spring-boot-starter-data-jpa
+That pulls in:
+Hibernate
+JPA support
+JDBC
+
+You don’t use Hibernate directly.
+You interact through:
+Entity
+Repository
+Service
+
+What Hibernate actually does
+Behind the scenes:
+tracks your entities
+generates SQL
+sends SQL to database
+converts results → Java objects
+
+
+Three ways to work with databases in Spring
+1. JPA / Hibernate (what you're using)
+2. JPQL (JPA Query Language)
+3. Native SQL
+4. JDBC (low-level, no JPA)
+
+
+Hibernate is the invisible engine that reads your entity and repository calls, then generates and runs SQL for you.
+
+
+
+
+{
+  "title": "New title",
+  "completed": true,
+  "priority": "HIGH",
+  "dueDate": "2026-04-20"
+}
+
+
+/auth/register
+/auth/login
+{
+  "username": "nick",
+  "password": "test123"
+}
+
+
+
+
+Client JSON
+→ Controller receives request
+→ Spring converts JSON into TaskRequestDto
+→ validation runs
+→ Controller passes DTO to Service
+→ Service uses Mapper to convert DTO → Task entity
+→ Repository saves entity
+→ Database
+
+
+
+Request DTO → input validation
+Entity → persistence
+Response DTO → output formatting

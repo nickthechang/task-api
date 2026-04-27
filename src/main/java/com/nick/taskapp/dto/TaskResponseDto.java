@@ -2,9 +2,13 @@ package com.nick.taskapp.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import com.nick.taskapp.model.Priority;
-
+/*
+ * Response DTO for sending task data to the client.
+ *
+ * Defines the structure of the API response and controls
+ * what fields are exposed externally.
+ */
 public class TaskResponseDto {
 
     private Long id;
@@ -85,3 +89,28 @@ public class TaskResponseDto {
         this.updatedAt = updatedAt;
     }
 }
+
+/*
+TaskResponseDto defines what your API sends back to the client.
+
+Response DTO
+Controls exactly what data is exposed to the client.
+
+Separation of Concerns
+Entity = database structure
+Response DTO = API output structure
+
+Data Shaping
+Lets you decide:
+what fields to include
+what format to return
+
+
+Why:
+1. Control what the client sees
+2. Prevent breaking changes when database changes
+3. Security. Doenst expose passwords or ID's
+
+
+TaskResponseDto is the final shape of your API response — not your database model.
+*/

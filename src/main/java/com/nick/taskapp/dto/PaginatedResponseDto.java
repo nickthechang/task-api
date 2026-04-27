@@ -1,7 +1,12 @@
 package com.nick.taskapp.dto;
 
 import java.util.List;
-
+/*
+ * Generic DTO for paginated API responses.
+ *
+ * Wraps a list of data along with pagination metadata
+ * such as current page, size, and total counts.
+ */
 public class PaginatedResponseDto<T> {
 
     private List<T> data;
@@ -40,3 +45,29 @@ public class PaginatedResponseDto<T> {
         return totalPages;
     }
 }
+
+
+/*
+This DTO defines the structure of a paginated API response.
+Instead of returning just a list of tasks, it returns:
+the data (list of items)
+pagination info (page, size, total count, etc.)
+
+
+Pagination DTO
+Encapsulates:
+actual data
+metadata about that data
+
+Generics
+PaginatedResponseDto<T>
+Allows reuse for any type:
+tasks
+users
+anything else later
+
+Data + Metadata Separation
+Separates:
+data → actual results
+metadata → info about the results
+*/
