@@ -28,11 +28,11 @@ public class WebConfig {
                         /*
                         * Allow common HTTP methods used by the API.
                         */
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                         /*
                         * Allow all headers (including Authorization for JWT).
                         */
-                        .allowedHeaders("*");
+                        .allowedHeaders("Authorization", "Content-Type");
             }
         };
     }

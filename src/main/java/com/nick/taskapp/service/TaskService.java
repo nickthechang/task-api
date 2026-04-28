@@ -76,7 +76,11 @@ public class TaskService {
      */
     public TaskResponseDto getTaskById(Long id) {
         logger.info("Fetching task with id: {}", id);
-        Task task = findTaskOrThrow(id);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Task not found with id: {}", id);
+                    return new TaskNotFoundException("Task not found");
+                });
         return taskMapper.toResponseDto(task);
     }
 
@@ -86,7 +90,11 @@ public class TaskService {
      */
     public TaskResponseDto updateTask(Long id, TaskRequestDto updatedTask) {
         logger.info("Updating task with id: {}", id);
-        Task existingTask = findTaskOrThrow(id);
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Task not found for update: {}", id);
+                    return new TaskNotFoundException("Task not found");
+                });
         existingTask.setTitle(updatedTask.getTitle());
         existingTask.setCompleted(updatedTask.isCompleted());
         existingTask.setPriority(updatedTask.getPriority());
@@ -102,7 +110,11 @@ public class TaskService {
      */
     public void deleteTaskById(Long id) {
         logger.info("Deleting task with id: {}", id);
-        Task task = findTaskOrThrow(id);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Task not found for deletion: {}", id);
+                    return new TaskNotFoundException("Task not found");
+                });
         taskRepository.delete(task);
         logger.info("Task deleted with id: {}", id);
     }
@@ -137,7 +149,7 @@ public class TaskService {
     }
 
     public List<TaskResponseDto> getTasksByPriority(Priority priority) {
-        return taskRepository.findByPriority(priority)
+        return taskRepository.findByPriorityIgnoreCase(priority)
                 .stream()
                 .map(taskMapper::toResponseDto)
                 .toList();
@@ -209,9 +221,8 @@ public class TaskService {
      * Only non-null fields in the patch DTO are updated.
      */
     public TaskResponseDto patchTask(Long id, TaskPatchDto patchDto) {
-        logger.info("Patching task with id: {}", id);
-
-        Task existingTask = findTaskOrThrow(id);
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
 
         if (patchDto.getTitle() != null) {
             existingTask.setTitle(patchDto.getTitle());
@@ -230,19 +241,7 @@ public class TaskService {
         }
 
         Task savedTask = taskRepository.save(existingTask);
-
-        logger.info("Task patched with id: {}", id);
-
         return taskMapper.toResponseDto(savedTask);
-    }
-
-
-    private Task findTaskOrThrow(Long id) {
-        return taskRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Task not found with id: {}", id);
-                    return new TaskNotFoundException("Task not found");
-                });
     }
 
 }

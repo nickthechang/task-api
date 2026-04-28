@@ -1,15 +1,20 @@
 package com.nick.taskapp.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import com.nick.taskapp.security.JwtAuthenticationFilter;
 import com.nick.taskapp.security.JwtService;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 /*
  * Configures application security rules.
  *
@@ -18,45 +23,81 @@ import com.nick.taskapp.security.JwtService;
  */
 @Configuration
 public class SecurityConfig {
-    /*
-     * Service used by the JWT filter to validate tokens.
-     */
+
     private final JwtService jwtService;
 
     public SecurityConfig(JwtService jwtService) {
         this.jwtService = jwtService;
     }
-    /*
-     * Creates the JWT authentication filter as a Spring bean.
-     */
+
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtService);
     }
-    /*
-     * Defines the security filter chain for HTTP requests.
-     */
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                /*
+                 * Enable CORS inside Spring Security.
+                 */
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                /*
+                 * Disable CSRF for stateless JWT API.
+                 */
                 .csrf(csrf -> csrf.disable())
 
                 /*
-                * JWT APIs should not rely on server-side sessions.
-                */
+                 * Do not use server-side sessions.
+                 */
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
                 .authorizeHttpRequests(auth -> auth
+                        /*
+                         * Allow browser preflight requests.
+                         */
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        /*
+                         * Auth endpoints are public.
+                         */
                         .requestMatchers("/auth/**").permitAll()
+
+                        /*
+                         * Task endpoints require JWT authentication.
+                         */
                         .requestMatchers("/tasks/**").authenticated()
+
                         .anyRequest().permitAll()
                 )
 
+                /*
+                 * Run JWT filter before Spring Security's default auth filter.
+                 */
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    /*
+     * Defines CORS rules used by Spring Security.
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 }
 

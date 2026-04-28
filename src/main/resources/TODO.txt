@@ -1,0 +1,8 @@
+1. Role-based auth (RBAC)
+2. Task ownership (you already started)
+3. Flyway migrations
+4. Swagger docs
+5. Dockerize project
+6. Deploy to cloud
+7. Add basic query optimization
+8. Add one async feature (optional)

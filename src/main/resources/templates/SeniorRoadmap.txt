@@ -1,0 +1,87 @@
+Senior-Level Upgrade Roadmap
+1. Clean architecture polish
+Remove overlapping endpoints if /tasks/advanced replaces them.
+Replace AuthService.login() returning null with custom exceptions.
+Add custom auth exceptions:
+InvalidCredentialsException
+UsernameAlreadyExistsException
+Add consistent ApiResponse everywhere.
+Standardize comments and remove old scratch comments.
+2. Stronger validation
+Add validation to AuthRequestDto.
+Add validation to TaskPatchDto.
+Add password rules:
+minimum length
+maybe username length
+Add safe validation messages.
+3. Better security
+Add stateless session config.
+Add role support:
+ROLE_USER
+ROLE_ADMIN
+Store roles on User.
+Protect admin-only endpoints.
+Add proper AuthenticationEntryPoint for clean 401 responses.
+Add token expiration handling more explicitly.
+Consider refresh tokens later.
+4. Better error design
+Add a dedicated ErrorResponseDto.
+Include:
+timestamp
+status
+message
+path
+field errors if validation fails
+Add fallback handler for unexpected errors.
+Stop exposing raw exception messages if sensitive.
+5. Database maturity
+Add @Table and @Column annotations consistently.
+Add database constraints:
+non-null columns
+unique constraints where needed
+Add indexes for common filters:
+priority
+completed
+dueDate
+Add Flyway or Liquibase for database migrations.
+6. Testing maturity
+Finish updated service/controller tests.
+Add tests for:
+pagination
+advanced filtering
+patch behavior
+validation errors
+auth login/register
+protected route access
+Add integration tests with authenticated requests.
+Use Testcontainers PostgreSQL later.
+7. Production config
+Split config:
+application-dev.properties
+application-test.properties
+application-prod.properties
+Move secrets to environment variables.
+Add safer JWT secret handling.
+Add CORS origin from config instead of hardcoded localhost.
+8. Observability
+Improve logging consistency.
+Add request logging.
+Add Spring Boot Actuator.
+Expose health endpoint.
+Add structured logs later.
+9. API documentation
+Add Swagger/OpenAPI.
+Document:
+auth endpoints
+task endpoints
+request DTOs
+response DTOs
+error responses
+10. Deployment readiness
+Add Dockerfile.
+Add docker-compose.yml with app + PostgreSQL.
+Add production profile.
+Add README with setup instructions.
+Later deploy to AWS:
+app on EC2/ECS/Elastic Beanstalk
+PostgreSQL on RDS

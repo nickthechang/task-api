@@ -30,7 +30,7 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
 
     List<Task> findAllByOrderByDueDateAsc();
 
-    List<Task> findByPriority(Priority priority);
+    List<Task> findByPriorityIgnoreCase(Priority priority);
     
 }
 
