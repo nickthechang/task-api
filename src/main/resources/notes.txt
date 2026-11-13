@@ -23,7 +23,7 @@ sends SQL to database
 converts results → Java objects
 
 
-Three ways to work with databases in Spring
+Four ways to work with databases in Spring
 1. JPA / Hibernate (what you're using)
 2. JPQL (JPA Query Language)
 3. Native SQL
