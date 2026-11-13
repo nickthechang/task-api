@@ -20,21 +20,31 @@ public class JwtService {
      * Secret key used to sign and verify JWTs.
      * Loaded from application configuration.
      */
-    @Value("${jwt.secret}")
-    private String secret;
+    private final SecretKey signingKey;
     
     /*
      * Token lifetime in milliseconds.
      * Loaded from application configuration.
      */
-    @Value("${jwt.expiration}")
-    private long expiration;
+    private final long expiration;
+
+    public JwtService(@Value("${jwt.secret}") String secret,
+                      @Value("${jwt.expiration}") long expiration) {
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalArgumentException("JWT_SECRET must be configured");
+        }
+        if (expiration <= 0) {
+            throw new IllegalArgumentException("JWT expiration must be positive");
+        }
+        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.expiration = expiration;
+    }
 
     /*
      * Builds the signing key used by the JWT library.
      */
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        return signingKey;
     }
 
     /*
